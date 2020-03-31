@@ -152,7 +152,13 @@ func (x *XlsxFile) parseRawCells(rawCells []rawCell, index int) ([]Cell, error) 
 	cells := []Cell{}
 	for _, rawCell := range rawCells {
 		if rawCell.Value == nil && rawCell.InlineString == nil {
-			// This cell is empty, so ignore it
+			// 添加自己逻辑.之前为空值跳过
+			column := strings.Map(removeNonAlpha, rawCell.Reference)
+			cells = append(cells, Cell{
+				Column: column,
+				Row:    index,
+				Value:  "",
+			})
 			continue
 		}
 		column := strings.Map(removeNonAlpha, rawCell.Reference)

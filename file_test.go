@@ -2,6 +2,7 @@ package xlsxreader
 
 import (
 	"archive/zip"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"testing"
@@ -33,9 +34,29 @@ func TestGettingFileByNameFailure(t *testing.T) {
 }
 
 func TestOpeningMissingFile(t *testing.T) {
-	_, err := OpenFile("this_doesnt_exist.zip")
+	_, err := OpenFile("/Users/zhangbob/git/golang/test/xls/1.xlsx")
 
 	require.EqualError(t, err, "open this_doesnt_exist.zip: no such file or directory")
+}
+
+func TestToSlice(t *testing.T) {
+	out, err := ToSlice("/Users/zhangbob/git/golang/test/xls/1.xlsx")
+	if err != nil {
+		t.Fatal("err:", err.Error())
+	}
+
+	for _, sheet := range out {
+		for _, row := range sheet {
+			for _, cell := range row {
+				if cell == "" {
+					fmt.Printf("%s ", "空值")
+				} else {
+					fmt.Printf("%s ", cell)
+				}
+			}
+			fmt.Println("")
+		}
+	}
 }
 
 func TestOpeningXlsxFile(t *testing.T) {

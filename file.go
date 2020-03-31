@@ -57,6 +57,28 @@ func (xl *XlsxFileCloser) Close() error {
 	return xl.zipReadCloser.Close()
 }
 
+func ToSlice(filenname string) (output [][][]string, err error) {
+	f, err := OpenFile(filenname)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, sheet := range f.Sheets {
+		var rows [][]string
+		for row := range f.ReadRows(sheet) {
+			var cells []string
+			for _, cell := range row.Cells {
+				cells = append(cells, cell.Value)
+			}
+			rows = append(rows, cells)
+		}
+
+		output = append(output, rows)
+	}
+
+	return output, nil
+}
+
 // OpenFile takes the name of an XLSX file and returns a populated XlsxFile struct for it.
 // If the file cannot be found, or key parts of the files contents are missing, an error
 // is returned.
