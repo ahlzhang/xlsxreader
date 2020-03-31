@@ -59,6 +59,7 @@ func (xl *XlsxFileCloser) Close() error {
 
 func ToSlice(filenname string) (output [][][]string, err error) {
 	f, err := OpenFile(filenname)
+	defer f.Close()
 	if err != nil {
 		return nil, err
 	}
